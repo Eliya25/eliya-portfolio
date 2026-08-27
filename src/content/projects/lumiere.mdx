@@ -13,16 +13,119 @@ technologies:
   - Express
   - Gemini
   - LangChain
+  - TMDB
   - Zod
 repositoryUrl: https://github.com/Eliya25/lumiere-ai-movie-concierge
 demoUrl: https://lumiere-ai-movie-concierge.vercel.app/
 seo:
   title: Lumière — AI Movie Concierge
-  description: A concise preview of Lumière, an AI movie concierge built with TypeScript, Express, Gemini, LangChain, TMDB, and structured output.
+  description: How Lumière turns natural-language movie preferences into structured, enriched recommendations through a resilient TypeScript pipeline.
 ---
 
 ## Overview
 
-Lumière helps people describe what they want to watch in natural language and receive structured movie recommendations.
+Lumière is a full-stack movie concierge for the moment when a person knows the feeling they want, but not the title. It accepts a natural-language description alongside optional genre, mood, and result-count controls, then returns a small, explainable selection rather than a generic catalogue search.
 
-This entry is intentionally concise while the portfolio content system is validated. The complete engineering case study will be written after the repository and live application are audited in Milestone 4.
+The project is split into a React and Vite client and an Express API. The API coordinates Gemini through LangChain, validates structured output with Zod, and enriches each recommendation with TMDB metadata. The deployed interface and API run as separate Vercel applications.
+
+<ProjectFigure
+  src="https://raw.githubusercontent.com/Eliya25/lumiere-ai-movie-concierge/3e6a913507b91887578e2cccc11edeb37a94973b/docs/lumiere-demo.png"
+  alt="Lumière interface showing a natural-language movie request and three enriched recommendations"
+  width="1440"
+  height="2341"
+  caption="The completed Lumière flow: intent capture, refinement controls, and enriched recommendation cards."
+/>
+
+## Problem
+
+Traditional movie discovery tools work well when the user already has a title, actor, or genre in mind. They are less useful for requests such as “a clever mystery for a rainy night,” where tone, setting, pacing, and constraints matter together.
+
+The engineering challenge was not only to call a language model. The application needed to turn an open-ended request into predictable data, attach trustworthy catalogue information, keep external-provider failures contained, and expose a responsive UI with clear loading, error, and retry states.
+
+## Solution
+
+Lumière separates interpretation from factual enrichment. Gemini proposes movies and explains why they fit the request; TMDB supplies posters, backdrops, release information, ratings, vote counts, overviews, and trailers. Zod contracts sit at the input and model-output boundaries so the rest of the application works with known shapes.
+
+The client preserves the original intent when the user refines a result. It sends the previous titles as an exclusion list and adds a bounded refinement such as darker, funnier, or more recent, reducing immediate repetition without discarding the initial request.
+
+## Architecture
+
+The repository keeps the browser and API concerns in separate workspaces, with shared behavior expressed through HTTP contracts rather than coupled runtime state.
+
+```text
+React + Vite client
+        |
+        | POST /api/recommend
+        v
+Express API -> Zod input validation -> recommendation cache
+        |                                  |
+        | cache miss                       | cache hit
+        v                                  v
+Gemini via LangChain                 JSON response
+        |
+        v
+Zod structured output -> parallel TMDB enrichment -> cache -> JSON response
+```
+
+This boundary keeps provider credentials on the server and lets the frontend focus on interaction state, accessible controls, and presentation.
+
+## Request flow
+
+1. The form validates the prompt and controls in the browser, then sends a typed JSON request to the API.
+2. Express applies request identification, security and CORS headers, a small body-size limit, and rate limiting before the recommendation controller runs.
+3. The controller validates the payload with Zod. Invalid or unknown fields receive a clear client error instead of reaching external services.
+4. A normalized representation of the validated request becomes the recommendation-cache key. A hit returns immediately with an `X-Cache: HIT` header.
+5. On a miss, LangChain asks Gemini for schema-constrained recommendations. The parsed result is then enriched through TMDB.
+6. The combined response is cached and returned with `X-Cache: MISS`. Unexpected provider failures are logged with the request ID while the client receives a generic `503` response.
+
+<ProjectVideo
+  src="https://lumiere-ai-movie-concierge.vercel.app/lumiere-demo.webm"
+  poster="https://raw.githubusercontent.com/Eliya25/lumiere-ai-movie-concierge/3e6a913507b91887578e2cccc11edeb37a94973b/frontend/public/og-image.png"
+  caption="The existing Lumière demo video, served by the deployed frontend."
+/>
+
+## Structured AI output
+
+The model call uses LangChain's structured-output mode with a Zod schema rather than parsing free-form prose. Each movie must include a title, year, genre list, cast list, recommendation reason, and a rating constrained to a 1–10 range. The enclosing response accepts one to six movies, matching the bounded request contract.
+
+This does not make generated facts authoritative. It makes the response shape dependable. Catalogue data is therefore resolved separately through TMDB, and the UI prefers the TMDB rating when enrichment succeeds.
+
+## TMDB enrichment and fault isolation
+
+For each suggested title, the API searches TMDB with the title and release year, preferring an exact year match before falling back to the first search result. A second request gathers video data and prioritizes official YouTube trailers, followed by other trailers and then teasers.
+
+Enrichment is deliberately best-effort. Trailer lookup can fail without discarding the rest of a movie's metadata. Movies are enriched concurrently with `Promise.allSettled`; if one movie fails, that recommendation remains available with nullable TMDB fields while the other results continue normally. This prevents a single catalogue lookup from collapsing the whole response.
+
+## Caching and rate limiting
+
+Two bounded in-memory TTL caches serve different lifetimes: recommendation responses default to ten minutes, while TMDB lookups default to twenty-four hours. Both limits are configurable, expired entries are removed on access, and the oldest entry is evicted when capacity is reached.
+
+Rate limiting runs before validation and provider calls, using the forwarded Vercel client address when available and Express's normalized IP handling otherwise. The default policy allows twenty recommendation requests per fifteen-minute window and emits standard rate-limit headers.
+
+The intentionally simple, process-local stores suit the scope of this portfolio deployment, but they do not coordinate across serverless instances. A larger multi-instance system would need a shared cache and rate-limit store for globally consistent behavior.
+
+## Testing and CI/CD
+
+The backend suite covers the health endpoint, CORS behavior, malformed and oversized requests, forwarded-IP handling, rate limiting, TTL-cache expiry and eviction, TMDB matching and caching, and enrichment failure paths. Frontend component tests cover form submission, validation, and result rendering. A Playwright test intercepts the recommendation API, verifies the outgoing request, renders mocked cards, and opens the details dialog without depending on live providers.
+
+GitHub Actions runs three independent jobs: backend type-checking and tests; frontend linting, component tests, and production build; and the mocked browser flow in Chromium. This is CI validation rather than a claim of branch protection or automated production promotion.
+
+## Deployment and observability
+
+The frontend and API are deployed separately on Vercel. Their connection is configured through the public API URL, while Gemini and TMDB credentials remain server-side environment variables. The public API exposes a small health endpoint, and the frontend includes Vercel Analytics and Speed Insights for deployed usage and field-performance visibility.
+
+Deployment remains intentionally straightforward: the CI workflow proves the repository state, while Vercel hosts the two applications. The repository does not encode a claim that GitHub Actions itself promotes releases.
+
+## Trade-offs
+
+- Structured generation improves contract reliability, but it cannot guarantee factual correctness; TMDB remains the source for catalogue metadata.
+- In-memory caching has no external dependency and keeps the implementation legible, but cache hits and rate limits are not shared across instances.
+- Parallel best-effort enrichment favors returning useful partial results over requiring every TMDB request to succeed.
+- Separate frontend and API deployments preserve a clear trust boundary, at the cost of explicit CORS and environment configuration.
+- The end-to-end test is deterministic because it mocks the provider boundary; live-provider behavior is covered by contracts and runtime error handling rather than a fragile CI dependency.
+
+## Lessons learned
+
+The most important boundary in an AI feature is the one around uncertainty. A schema makes model output usable, but the application still needs a separate source for factual metadata and a graceful path when that source is incomplete.
+
+The project also reinforced the value of ordering middleware and failures deliberately. Rate limiting before provider work protects cost, validation before orchestration narrows the state space, and per-item isolation preserves value when one enrichment request fails. Those decisions make the system easier to reason about without overstating what a compact portfolio architecture can guarantee.

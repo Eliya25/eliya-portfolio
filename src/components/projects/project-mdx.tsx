@@ -1,6 +1,10 @@
 import { evaluate } from "@mdx-js/mdx";
 import * as runtime from "react/jsx-runtime";
 
+import {
+  ProjectFigure,
+  ProjectVideo,
+} from "@/components/projects/project-media";
 import { rejectUnsafeMdx } from "@/lib/content/safe-mdx";
 
 export async function ProjectMdx({ source }: { source: string }) {
@@ -9,5 +13,5 @@ export async function ProjectMdx({ source }: { source: string }) {
     remarkPlugins: [rejectUnsafeMdx],
   });
 
-  return <Content />;
+  return <Content components={{ ProjectFigure, ProjectVideo }} />;
 }

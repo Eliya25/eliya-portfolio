@@ -12,6 +12,15 @@ describe("safe MDX policy", () => {
     ).resolves.toBeDefined();
   });
 
+  it("accepts the audited project media components", async () => {
+    await expect(
+      compile(
+        '<ProjectFigure src="https://example.com/image.png" alt="Demo" width="1200" height="800" caption="Interface" />\n\n<ProjectVideo src="https://example.com/demo.webm" poster="https://example.com/poster.png" caption="Demo video" />',
+        { remarkPlugins: [rejectUnsafeMdx] },
+      ),
+    ).resolves.toBeDefined();
+  });
+
   it.each([
     ["JavaScript expressions", "Result: {process.env.SECRET}"],
     ["ES module imports", 'import Component from "./component"\n\n# Overview'],
