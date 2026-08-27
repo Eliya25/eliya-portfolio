@@ -3,10 +3,14 @@ import { z } from "zod";
 const isoDateSchema = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, "Expected an ISO date in YYYY-MM-DD format")
-  .refine(
-    (value) => !Number.isNaN(Date.parse(`${value}T00:00:00Z`)),
-    "Expected a valid date",
-  );
+  .refine((value) => {
+    const parsedDate = new Date(`${value}T00:00:00.000Z`);
+
+    return (
+      !Number.isNaN(parsedDate.getTime()) &&
+      parsedDate.toISOString().slice(0, 10) === value
+    );
+  }, "Expected a valid date");
 
 const httpsUrlSchema = z.url().refine((value) => value.startsWith("https://"), {
   message: "Expected an HTTPS URL",

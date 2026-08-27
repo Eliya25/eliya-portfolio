@@ -34,6 +34,18 @@ describe("parseProjectFrontmatter", () => {
     );
   });
 
+  it.each(["2026-02-30", "2026-13-01"])(
+    "rejects the nonexistent calendar date %s",
+    (publishedAt) => {
+      expect(() =>
+        parseProjectFrontmatter(
+          { ...validProject, publishedAt },
+          "invalid-date.mdx",
+        ),
+      ).toThrowError(/Expected a valid date/);
+    },
+  );
+
   it("rejects duplicate technologies and unknown fields", () => {
     expect(() =>
       parseProjectFrontmatter(
