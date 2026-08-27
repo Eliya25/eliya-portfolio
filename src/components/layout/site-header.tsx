@@ -15,12 +15,15 @@ export function SiteHeader() {
             · Backend Engineer &amp; Development Team Lead
           </span>
         </div>
-        <div className="header-actions">
-          <Link className="github-link" href="/projects">
+        <nav className="header-actions" aria-label="Primary navigation">
+          <Link className="site-nav-link" href="/projects">
             Projects
           </Link>
+          <Link className="site-nav-link" href="/about">
+            About
+          </Link>
           <a
-            className="github-link"
+            className="site-nav-link header-github"
             href="https://github.com/Eliya25"
             target="_blank"
             rel="noreferrer"
@@ -28,7 +31,7 @@ export function SiteHeader() {
             GitHub <span aria-hidden="true">↗</span>
           </a>
           <ThemeToggle />
-        </div>
+        </nav>
       </div>
     </header>
   );

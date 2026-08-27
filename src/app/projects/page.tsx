@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { ProjectCard } from "@/components/projects/project-card";
 import { getAllProjects } from "@/lib/content/projects";
 
 export const metadata: Metadata = {
@@ -24,19 +24,7 @@ export default async function ProjectsPage() {
       </p>
       <div className="project-grid">
         {projects.map((project) => (
-          <article className="project-card" key={project.slug}>
-            <div className="project-card-meta">
-              {project.status ? <span>{project.status}</span> : null}
-              <span>{project.technologies.slice(0, 3).join(" · ")}</span>
-            </div>
-            <h2>
-              <Link href={`/projects/${project.slug}`}>{project.title}</Link>
-            </h2>
-            <p>{project.shortDescription}</p>
-            <Link className="text-link" href={`/projects/${project.slug}`}>
-              Read project overview →
-            </Link>
-          </article>
+          <ProjectCard project={project} key={project.slug} />
         ))}
       </div>
     </section>
