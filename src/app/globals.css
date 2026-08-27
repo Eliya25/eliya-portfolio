@@ -109,7 +109,7 @@ a {
   align-items: center;
   gap: 0.75rem;
 }
-.github-link {
+.site-nav-link {
   text-underline-offset: 0.25rem;
 }
 
@@ -129,9 +129,21 @@ a {
   border-color: var(--accent);
   color: var(--accent);
 }
+
+.theme-icon {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  box-shadow: inset 0.4rem 0 currentColor;
+}
 .hero {
   padding-block: clamp(5rem, 12vw, 10rem);
   align-self: center;
+}
+
+.home-page {
+  width: 100%;
 }
 
 .eyebrow {
@@ -159,6 +171,12 @@ h1 {
   color: var(--muted);
   font-size: clamp(1.0625rem, 2vw, 1.25rem);
   line-height: 1.7;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .button {
@@ -206,6 +224,149 @@ h1 {
   padding-block: clamp(4rem, 9vw, 8rem);
 }
 
+.home-section {
+  padding-block: clamp(4rem, 8vw, 7rem);
+  border-top: 1px solid var(--border);
+}
+
+.section-heading,
+.split-section,
+.contact-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.75fr);
+  align-items: end;
+  gap: clamp(2rem, 7vw, 6rem);
+}
+
+.section-heading {
+  margin-bottom: 2rem;
+}
+
+.section-heading h2,
+.split-section h2,
+.contact-section h2,
+.about-section h2 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.75rem);
+  letter-spacing: -0.05em;
+  line-height: 1.05;
+}
+
+.section-heading .eyebrow,
+.split-section .eyebrow,
+.contact-section .eyebrow,
+.about-section .eyebrow {
+  margin-bottom: 1rem;
+}
+
+.section-note,
+.section-copy,
+.about-lede,
+.education-details {
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.section-note {
+  max-width: 28rem;
+  margin: 0;
+}
+
+.section-copy p {
+  margin-top: 0;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+}
+
+.skill-group {
+  min-height: 12rem;
+  padding: 1.5rem;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.skill-group h3 {
+  margin: 0 0 2rem;
+  color: var(--accent);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.skill-group p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.contact-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.about-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.7fr);
+  gap: clamp(3rem, 8vw, 8rem);
+  align-items: start;
+  padding-bottom: clamp(4rem, 8vw, 7rem);
+}
+
+.about-intro > .eyebrow {
+  grid-column: 1 / -1;
+  margin-bottom: -1rem;
+}
+
+.about-lede p:first-child {
+  margin-top: 0;
+  color: var(--foreground);
+  font-size: 1.2rem;
+}
+
+.about-section {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.7fr) minmax(0, 1fr);
+  gap: clamp(2rem, 8vw, 7rem);
+  padding-block: clamp(3rem, 7vw, 6rem);
+  border-top: 1px solid var(--border);
+}
+
+.responsibility-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.responsibility-list li {
+  position: relative;
+  padding: 0 0 1.5rem 1.5rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.responsibility-list li::before {
+  content: "";
+  position: absolute;
+  top: 0.7em;
+  left: 0;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.education-details p {
+  margin: 0;
+}
+
 .page-title {
   max-width: 16ch;
   font-size: clamp(2.5rem, 7vw, 5.5rem);
@@ -242,13 +403,15 @@ h1 {
   text-transform: uppercase;
 }
 
-.project-card h2 {
+.project-card h2,
+.project-card h3 {
   margin: 2rem 0 0.75rem;
   font-size: clamp(1.5rem, 3vw, 2rem);
   letter-spacing: -0.035em;
 }
 
-.project-card h2 a {
+.project-card h2 a,
+.project-card h3 a {
   text-decoration: none;
 }
 
@@ -331,7 +494,7 @@ h1 {
   .site-role {
     display: none;
   }
-  .github-link {
+  .header-github {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -344,6 +507,35 @@ h1 {
   .project-facts {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+
+  .section-heading,
+  .split-section,
+  .contact-section,
+  .about-intro,
+  .about-section {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 2rem;
+  }
+
+  .about-intro > .eyebrow {
+    grid-column: auto;
+    margin-bottom: 0;
+  }
+
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skill-group {
+    min-height: auto;
+  }
+}
+
+@media (min-width: 40.01rem) and (max-width: 64rem) {
+  .skills-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

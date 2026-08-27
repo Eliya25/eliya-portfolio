@@ -22,7 +22,7 @@ export function ThemeToggle() {
       aria-label="Toggle color theme"
       title="Toggle color theme"
     >
-      <span aria-hidden="true">◐</span>
+      <span className="theme-icon" aria-hidden="true" />
     </button>
   );
 }
