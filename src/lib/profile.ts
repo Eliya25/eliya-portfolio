@@ -19,7 +19,14 @@ export const profile = {
 export const skillGroups = [
   {
     title: "Backend",
-    skills: ["Node.js", "TypeScript", "Express", "FastAPI", "REST API design"],
+    skills: [
+      "Node.js",
+      "TypeScript",
+      "Express",
+      "Python",
+      "FastAPI",
+      "REST API Design",
+    ],
   },
   {
     title: "Data",
@@ -27,14 +34,18 @@ export const skillGroups = [
   },
   {
     title: "AI",
-    skills: ["Gemini", "LangChain", "OpenRouter", "Structured LLM outputs"],
+    skills: ["Gemini", "LangChain", "OpenRouter", "Structured LLM Outputs"],
   },
   {
     title: "Frontend",
     skills: ["React", "Next.js", "Vite", "Tailwind CSS"],
   },
   {
-    title: "Engineering",
-    skills: ["Zod", "Vitest", "Supertest", "Playwright", "GitHub Actions"],
+    title: "Infrastructure",
+    skills: ["Docker", "GitHub Actions", "Vercel"],
+  },
+  {
+    title: "Testing & Quality",
+    skills: ["Zod", "Vitest", "Supertest", "Playwright"],
   },
 ] as const;
