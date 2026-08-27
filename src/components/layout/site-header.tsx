@@ -16,6 +16,9 @@ export function SiteHeader() {
           </span>
         </div>
         <div className="header-actions">
+          <Link className="github-link" href="/projects">
+            Projects
+          </Link>
           <a
             className="github-link"
             href="https://github.com/Eliya25"
