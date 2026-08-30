@@ -15,7 +15,7 @@ describe("safe MDX policy", () => {
   it("accepts the audited project media components", async () => {
     await expect(
       compile(
-        '<ProjectFigure src="https://example.com/image.png" alt="Demo" width="1200" height="800" caption="Interface" />\n\n<ProjectVideo src="https://example.com/demo.webm" poster="https://example.com/poster.png" caption="Demo video" />',
+        '<ArchitectureFlow />\n\n<ProjectFigure src="/image.png" alt="Demo" width="1200" height="800" caption="Interface" />\n\n<ProjectVideo src="https://example.com/demo.webm" poster="/poster.png" caption="Demo video" label="Video demo" />',
         { remarkPlugins: [rejectUnsafeMdx] },
       ),
     ).resolves.toBeDefined();

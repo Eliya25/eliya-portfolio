@@ -6,7 +6,11 @@ const executableNodeTypes = new Set([
   "mdxFlowExpression",
   "mdxTextExpression",
 ]);
-const allowedComponentNames = new Set(["ProjectFigure", "ProjectVideo"]);
+const allowedComponentNames = new Set([
+  "ArchitectureFlow",
+  "ProjectFigure",
+  "ProjectVideo",
+]);
 
 export const rejectUnsafeMdx = () => (tree: Root) => {
   visit(tree, (node) => {

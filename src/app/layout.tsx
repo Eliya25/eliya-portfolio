@@ -26,6 +26,11 @@ export const metadata: Metadata = {
   },
   description:
     "Portfolio of Eliya Cohen, a Backend Engineer and Development Team Lead focused on reliable systems and thoughtful engineering.",
+  applicationName: "Eliya Cohen Portfolio",
+  authors: [{ name: "Eliya Cohen", url: siteConfig.url }],
+  creator: "Eliya Cohen",
+  publisher: "Eliya Cohen",
+  formatDetection: { email: false, address: false, telephone: false },
 };
 
 const themeScript = `

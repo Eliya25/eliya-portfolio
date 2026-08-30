@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { ProjectMdx } from "@/components/projects/project-mdx";
 import { getAllProjects, getProjectBySlug } from "@/lib/content/projects";
+import { createPageMetadata } from "@/lib/metadata";
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
@@ -27,11 +28,15 @@ export async function generateMetadata({
 
   const { project } = document;
 
-  return {
+  return createPageMetadata({
     title: project.seo.title ?? project.title,
     description: project.seo.description,
-    alternates: { canonical: `/projects/${project.slug}` },
-  };
+    path: `/projects/${project.slug}`,
+    image:
+      project.slug === "lumiere"
+        ? "/images/projects/lumiere/poster.png"
+        : undefined,
+  });
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {

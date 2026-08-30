@@ -34,9 +34,15 @@ type ProjectVideoProps = {
   src: string;
   poster: string;
   caption: string;
+  label: string;
 };
 
-export function ProjectVideo({ src, poster, caption }: ProjectVideoProps) {
+export function ProjectVideo({
+  src,
+  poster,
+  caption,
+  label,
+}: ProjectVideoProps) {
   return (
     <figure className="project-media">
       <video
@@ -44,6 +50,7 @@ export function ProjectVideo({ src, poster, caption }: ProjectVideoProps) {
         controls
         preload="metadata"
         poster={poster}
+        aria-label={label}
       >
         <source src={src} type="video/webm" />
         Your browser does not support embedded video.

@@ -1,6 +1,7 @@
 import { evaluate } from "@mdx-js/mdx";
 import * as runtime from "react/jsx-runtime";
 
+import { ArchitectureFlow } from "@/components/projects/architecture-flow";
 import {
   ProjectFigure,
   ProjectVideo,
@@ -13,5 +14,7 @@ export async function ProjectMdx({ source }: { source: string }) {
     remarkPlugins: [rejectUnsafeMdx],
   });
 
-  return <Content components={{ ProjectFigure, ProjectVideo }} />;
+  return (
+    <Content components={{ ArchitectureFlow, ProjectFigure, ProjectVideo }} />
+  );
 }

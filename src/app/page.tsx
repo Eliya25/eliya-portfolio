@@ -1,8 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { ProjectCard } from "@/components/projects/project-card";
 import { getAllProjects } from "@/lib/content/projects";
 import { profile, skillGroups } from "@/lib/profile";
+import { createPageMetadata } from "@/lib/metadata";
+
+export const metadata: Metadata = createPageMetadata({
+  title: "Eliya Cohen — Backend Engineer",
+  description:
+    "Portfolio of Eliya Cohen, a Backend Engineer and Development Team Lead focused on maintainable services and reliable systems.",
+  path: "/",
+});
 
 export default async function Home() {
   const featuredProjects = (await getAllProjects()).filter(

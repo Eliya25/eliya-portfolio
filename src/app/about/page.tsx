@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 
+import { createPageMetadata } from "@/lib/metadata";
 import { profile } from "@/lib/profile";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "About",
   description:
     "Background, engineering approach, experience, and education of backend engineer Eliya Cohen.",
-};
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (

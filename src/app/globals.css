@@ -41,6 +41,18 @@
   box-sizing: border-box;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 html {
   min-width: 320px;
   scroll-behavior: smooth;
@@ -536,6 +548,71 @@ h1 {
   line-height: 1.6;
 }
 
+.architecture-figure {
+  margin: 2.5rem 0;
+}
+
+.architecture-flow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(1rem, 4vw, 2rem);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--surface);
+}
+
+.architecture-node {
+  width: min(100%, 22rem);
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.architecture-arrow {
+  min-height: 2.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.75rem;
+  line-height: 1.25;
+}
+
+.architecture-arrow b {
+  color: var(--foreground);
+  font-size: 1.1rem;
+}
+
+.architecture-branches {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.architecture-branch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.architecture-figure figcaption {
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
 @media (max-width: 40rem) {
   .site-role {
     display: none;
@@ -576,6 +653,10 @@ h1 {
 
   .skill-group {
     min-height: auto;
+  }
+
+  .architecture-branches {
+    grid-template-columns: 1fr;
   }
 }
 

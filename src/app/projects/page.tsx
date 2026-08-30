@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 
 import { ProjectCard } from "@/components/projects/project-card";
 import { getAllProjects } from "@/lib/content/projects";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Projects",
   description:
     "Backend, infrastructure, and AI engineering projects by Eliya Cohen.",
-};
+  path: "/projects",
+});
 
 export default async function ProjectsPage() {
   const projects = await getAllProjects();

@@ -29,7 +29,7 @@ Lumière is a full-stack movie concierge for the moment when a person knows the 
 The project is split into a React and Vite client and an Express API. The API coordinates Gemini through LangChain, validates structured output with Zod, and enriches each recommendation with TMDB metadata. The deployed interface and API run as separate Vercel applications.
 
 <ProjectFigure
-  src="https://raw.githubusercontent.com/Eliya25/lumiere-ai-movie-concierge/3e6a913507b91887578e2cccc11edeb37a94973b/docs/lumiere-demo.png"
+  src="/images/projects/lumiere/interface.png"
   alt="Lumière interface showing a natural-language movie request and three enriched recommendations"
   width="1440"
   height="2341"
@@ -52,20 +52,7 @@ The client preserves the original intent when the user refines a result. It send
 
 The repository keeps the browser and API concerns in separate workspaces, with shared behavior expressed through HTTP contracts rather than coupled runtime state.
 
-```text
-React + Vite client
-        |
-        | POST /api/recommend
-        v
-Express API -> Zod input validation -> recommendation cache
-        |                                  |
-        | cache miss                       | cache hit
-        v                                  v
-Gemini via LangChain                 JSON response
-        |
-        v
-Zod structured output -> parallel TMDB enrichment -> cache -> JSON response
-```
+<ArchitectureFlow />
 
 This boundary keeps provider credentials on the server and lets the frontend focus on interaction state, accessible controls, and presentation.
 
@@ -80,8 +67,9 @@ This boundary keeps provider credentials on the server and lets the frontend foc
 
 <ProjectVideo
   src="https://lumiere-ai-movie-concierge.vercel.app/lumiere-demo.webm"
-  poster="https://raw.githubusercontent.com/Eliya25/lumiere-ai-movie-concierge/3e6a913507b91887578e2cccc11edeb37a94973b/frontend/public/og-image.png"
-  caption="The existing Lumière demo video, served by the deployed frontend."
+  poster="/images/projects/lumiere/poster.png"
+  label="Silent video walkthrough of the Lumière recommendation flow"
+  caption="The existing silent Lumière interface walkthrough, served by the deployed frontend. The file has no audio track."
 />
 
 ## Structured AI output
@@ -104,7 +92,7 @@ Rate limiting runs before validation and provider calls, using the forwarded Ver
 
 The intentionally simple, process-local stores suit the scope of this portfolio deployment, but they do not coordinate across serverless instances. A larger multi-instance system would need a shared cache and rate-limit store for globally consistent behavior.
 
-## Testing and CI/CD
+## Testing and CI
 
 The backend suite covers the health endpoint, CORS behavior, malformed and oversized requests, forwarded-IP handling, rate limiting, TTL-cache expiry and eviction, TMDB matching and caching, and enrichment failure paths. Frontend component tests cover form submission, validation, and result rendering. A Playwright test intercepts the recommendation API, verifies the outgoing request, renders mocked cards, and opens the details dialog without depending on live providers.
 
