@@ -34,7 +34,7 @@ export async function generateMetadata({
     path: `/projects/${project.slug}`,
     image:
       project.slug === "lumiere"
-        ? "/images/projects/lumiere/poster.png"
+        ? "/images/projects/lumiere/poster.jpg"
         : undefined,
   });
 }
