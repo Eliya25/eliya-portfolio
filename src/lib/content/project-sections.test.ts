@@ -22,4 +22,10 @@ describe("project sections", () => {
       "tmdb-enrichment-fault-isolation",
     );
   });
+
+  it("rejects headings that would create duplicate ids", () => {
+    expect(() =>
+      extractProjectSections("## Request flow\n\n## Request-flow\n"),
+    ).toThrow(/unique, non-empty IDs/);
+  });
 });

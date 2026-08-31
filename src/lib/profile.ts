@@ -59,7 +59,7 @@ export const skillGroups = [
   },
   {
     title: "Frontend",
-    skills: ["React","Vite", "Tailwind CSS"],
+    skills: ["React", "Next.js", "Vite", "Tailwind CSS"],
   },
   {
     title: "Infrastructure",

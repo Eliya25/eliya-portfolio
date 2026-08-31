@@ -25,10 +25,7 @@ test("Home to Lumière exposes the verified project links", async ({ page }) => 
 
   const exploreProjects = page.getByRole("link", { name: "Explore projects" });
   await expect(exploreProjects).toHaveAttribute("href", "/projects");
-  await Promise.all([
-    page.waitForURL(/\/projects$/),
-    exploreProjects.click(),
-  ]);
+  await Promise.all([page.waitForURL(/\/projects$/), exploreProjects.click()]);
 
   const projectCard = page.getByRole("article");
   await expect(
