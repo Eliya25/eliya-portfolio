@@ -17,12 +17,43 @@ test("Home to Lumière exposes the verified project links", async ({ page }) => 
       name: "I build backend systems with fundamentals first.",
     }),
   ).toBeVisible();
+  await expect(
+    page.getByRole("img", {
+      name: "Lumière AI Movie Concierge title framed by cinematic film strips",
+    }),
+  ).toBeVisible();
 
-  await page.getByRole("link", { name: "Explore projects" }).click();
-  await expect(page).toHaveURL(/\/projects$/);
+  const exploreProjects = page.getByRole("link", { name: "Explore projects" });
+  await expect(exploreProjects).toHaveAttribute("href", "/projects");
+  await Promise.all([
+    page.waitForURL(/\/projects$/),
+    exploreProjects.click(),
+  ]);
+
+  const projectCard = page.getByRole("article");
+  await expect(
+    projectCard.getByRole("img", {
+      name: "Lumière AI Movie Concierge title framed by cinematic film strips",
+    }),
+  ).toBeVisible();
+  await expect(
+    projectCard.getByRole("link", { name: /^Case study/ }),
+  ).toHaveAttribute("href", "/projects/lumiere");
+  await expect(
+    projectCard.getByRole("link", { name: /Live demo/ }),
+  ).toHaveAttribute("href", "https://lumiere-ai-movie-concierge.vercel.app/");
+  await expect(
+    projectCard.getByRole("link", { name: /GitHub/ }),
+  ).toHaveAttribute(
+    "href",
+    "https://github.com/Eliya25/lumiere-ai-movie-concierge",
+  );
 
   await page
-    .getByRole("link", { name: "Lumière — AI Movie Concierge" })
+    .getByRole("link", {
+      name: "Lumière — AI Movie Concierge",
+      exact: true,
+    })
     .click();
   await expect(page).toHaveURL(/\/projects\/lumiere$/);
 
@@ -34,6 +65,19 @@ test("Home to Lumière exposes the verified project links", async ({ page }) => 
   await expect(main.getByRole("link", { name: /Live demo/ })).toHaveAttribute(
     "href",
     "https://lumiere-ai-movie-concierge.vercel.app/",
+  );
+
+  const tableOfContents = page.getByRole("navigation", {
+    name: "On this page",
+  });
+  await tableOfContents
+    .getByRole("link", { name: "Architecture", exact: true })
+    .click();
+  await expect(page).toHaveURL(/#architecture$/);
+  await expect(page.locator("#architecture")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Back to top" })).toHaveAttribute(
+    "href",
+    "#case-study-top",
   );
 });
 

@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { CaseStudyToc } from "@/components/projects/case-study-toc";
 import { ProjectMdx } from "@/components/projects/project-mdx";
 import { getAllProjects, getProjectBySlug } from "@/lib/content/projects";
+import { extractProjectSections } from "@/lib/content/project-sections";
 import { createPageMetadata } from "@/lib/metadata";
 
 type ProjectPageProps = {
@@ -48,9 +50,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   }
 
   const { project, body } = document;
+  const sections = extractProjectSections(body);
 
   return (
-    <article className="content-section shell">
+    <article className="content-section shell" id="case-study-top">
       <Link className="text-link back-link" href="/projects">
         ← All projects
       </Link>
@@ -91,8 +94,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <p>{project.technologies.join(", ")}</p>
         </div>
       </div>
-      <div className="prose">
-        <ProjectMdx source={body} />
+      <div className="case-study-layout">
+        <CaseStudyToc sections={sections} />
+        <div className="prose case-study-content">
+          <ProjectMdx source={body} />
+          <a className="text-link back-to-top" href="#case-study-top">
+            Back to top ↑
+          </a>
+        </div>
       </div>
     </article>
   );

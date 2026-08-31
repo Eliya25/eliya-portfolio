@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { ProjectCard } from "@/components/projects/project-card";
 import { getAllProjects } from "@/lib/content/projects";
-import { profile, skillGroups } from "@/lib/profile";
+import { profile, profileLinks, skillGroups } from "@/lib/profile";
 import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createPageMetadata({
@@ -120,14 +120,18 @@ export default async function Home() {
           <a className="button" href={`mailto:${profile.email}`}>
             Email me
           </a>
-          <a
-            className="text-link"
-            href={profile.githubUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            GitHub ↗
-          </a>
+          {profileLinks.map((link) => (
+            <a
+              className="text-link"
+              href={link.href}
+              target="_blank"
+              rel="noreferrer"
+              key={link.label}
+            >
+              {link.label} <span aria-hidden="true">↗</span>
+              <span className="sr-only"> (opens in a new tab)</span>
+            </a>
+          ))}
         </div>
       </section>
     </div>

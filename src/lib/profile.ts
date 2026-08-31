@@ -1,4 +1,18 @@
-export const profile = {
+type Profile = {
+  name: string;
+  role: string;
+  email: string;
+  githubUrl: string;
+  linkedinUrl?: string;
+  experience: string[];
+  education: {
+    degree: string;
+    institution: string;
+    period: string;
+  };
+};
+
+export const profile: Profile = {
   name: "Eliya Cohen",
   role: "Backend Engineer & Development Team Lead",
   email: "eliyacohen2019@gmail.com",
@@ -14,7 +28,14 @@ export const profile = {
     institution: "Ashkelon Academic College",
     period: "2022–2025",
   },
-} as const;
+};
+
+export const profileLinks = [
+  { label: "GitHub", href: profile.githubUrl },
+  ...(profile.linkedinUrl
+    ? [{ label: "LinkedIn", href: profile.linkedinUrl }]
+    : []),
+] as const;
 
 export const skillGroups = [
   {
@@ -38,7 +59,7 @@ export const skillGroups = [
   },
   {
     title: "Frontend",
-    skills: ["React", "Next.js", "Vite", "Tailwind CSS"],
+    skills: ["React","Vite", "Tailwind CSS"],
   },
   {
     title: "Infrastructure",
