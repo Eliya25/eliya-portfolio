@@ -1,15 +1,19 @@
-# Milestone 5 quality report
+# Final portfolio quality report
 
-Audit date: 2026-08-30  
-Production: <https://eliya-portfolio.vercel.app>  
-Production deployment: `dpl_gu1USKcGmzZV9o1Qeqpav4RhZ41e`
+Audit date: 2026-08-31
+
+Production: <https://eliya-portfolio.vercel.app>
+
+Production deployment: `BhVypLhoK4jjFMCTEpSmRAPAUwoC`
+
+Production commit: `23b1d2636747d0208e0cea46b51f9183f16bb41b`
 
 ## Automated validation
 
 - ESLint: passed
 - Prettier check: passed
 - TypeScript check: passed
-- Vitest: 18 tests passed
+- Vitest: 21 tests passed
 - Next.js production build: passed; all public routes generated
 - Playwright: 7 tests passed in Chromium
 - GitHub Actions: lint, formatting, type-check, unit tests, build, and deterministic E2E
@@ -35,16 +39,16 @@ This is an automated and code-level review, not a certification or a substitute 
 
 ## Lighthouse lab results
 
-Lighthouse was run against the public production deployment with a headless Chromium browser.
+Lighthouse was run against a local production build with a headless Chromium browser.
 
-| Route   | Performance | Accessibility | Best practices | SEO |   LCP | CLS |    TBT |
-| ------- | ----------: | ------------: | -------------: | --: | ----: | --: | -----: |
-| Home    |          95 |           100 |            100 | 100 | 2.2 s |   0 | 200 ms |
-| Lumière |          81 |           100 |            100 | 100 | 2.6 s |   0 | 590 ms |
+| Route   | Performance | Accessibility | Best practices | SEO |   LCP |   CLS |
+| ------- | ----------: | ------------: | -------------: | --: | ----: | ----: |
+| Home    |          98 |           100 |            100 | 100 | 2.4 s | 0.002 |
+| Lumière |          96 |           100 |            100 | 100 | 2.8 s |     0 |
 
 These are lab measurements from one run and can vary with network, CPU, cache, and deployment conditions. They are not field Core Web Vitals. Real Core Web Vitals should only be reported after Vercel Speed Insights has collected sufficient field data.
 
-The first Lumière audit identified the 1.5MB video poster as unnecessary image transfer. Converting the same local poster to a 1200×630 JPEG reduced it to about 65KB. In the subsequent production audit, the Lumière performance score improved from 71 to 81 and measured LCP improved from 9.9 seconds to 2.6 seconds.
+The measurements above describe one local lab run. They are not performance guarantees or field data from real users.
 
 ## Production smoke test
 
@@ -61,4 +65,4 @@ The following returned HTTP 200 with the expected content type:
 - `/opengraph-image` (`image/png`)
 - the external Lumière WebM (`video/webm`)
 
-The four HTML routes expose route-specific titles, canonical URLs, Open Graph metadata, and large Twitter cards. The sitemap and robots output use the configured HTTPS production origin without double slashes. A post-deploy Vercel error-log scan returned no runtime errors.
+The four HTML routes expose route-specific titles, canonical URLs, Open Graph metadata, and large Twitter cards. The sitemap and robots output use the configured HTTPS production origin without double slashes. The final production smoke test found no browser console errors, runtime errors, duplicate IDs, or broken internal links.

@@ -1,44 +1,109 @@
 # Eliya Cohen — Portfolio
 
-Personal engineering portfolio for Eliya Cohen, Backend Engineer & Development Team Lead. The site presents selected work through concise project summaries and source-backed case studies, alongside professional background and a focused skills overview.
+[![CI](https://github.com/Eliya25/eliya-portfolio/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Eliya25/eliya-portfolio/actions/workflows/ci.yml)
 
-## Stack
+Professional portfolio for Eliya Cohen, a Backend Engineer & Development Team Lead. It presents deployed projects through the problems they solve, their architecture, testing strategy, and engineering trade-offs.
 
-- Next.js App Router, React, and TypeScript
-- Tailwind CSS with a small CSS-token design system
-- MDX project content with Zod frontmatter validation
-- Vitest for content and schema logic
-- Playwright and axe-core for the primary journey, internal links, responsive behavior, and accessibility checks
-- GitHub Actions for CI validation
-- Vercel for preview and production deployments
+- [Live Portfolio](https://eliya-portfolio.vercel.app)
+- [Featured Case Study: Lumière](https://eliya-portfolio.vercel.app/projects/lumiere)
+- [GitHub Profile](https://github.com/Eliya25)
 
-Most pages and content components are React Server Components. The theme toggle is the only Client Component because it reads and updates browser theme preferences.
+![Eliya Cohen portfolio home page showing the hero and featured Lumière project](docs/assets/portfolio-home.png)
 
-## Setup
+## Overview
 
-Requirements: Node.js 24 and pnpm 11.
+The portfolio uses the Next.js App Router and primarily renders with React Server Components. Engineering case studies are authored in MDX, while Zod validates project frontmatter during tests and production builds. Project pages, static parameters, metadata, and sitemap entries are all generated from the same content source. GitHub Actions validates each change, and Vercel publishes the site.
+
+## Key Features
+
+- Home, Projects, About, and project detail pages
+- MDX engineering case studies with Zod-validated metadata
+- Static project generation from a shared content source
+- Visual project cards with optional cover, demo, and repository links
+- Case study table of contents with stable, unique heading anchors
+- Light and dark themes
+- Responsive and accessible layouts
+- SEO metadata, Open Graph image, sitemap, and robots configuration
+- Unit and end-to-end testing
+- GitHub Actions CI validation and Vercel deployment
+
+## Featured Project
+
+### Lumière — AI Movie Concierge
+
+Lumière turns natural-language movie preferences into structured recommendations, then enriches them with catalogue data while isolating external-provider failures.
+
+- [Read the Case Study](https://eliya-portfolio.vercel.app/projects/lumiere)
+- [Open the Live Demo](https://lumiere-ai-movie-concierge.vercel.app)
+- [View the Lumière Repository](https://github.com/Eliya25/lumiere-ai-movie-concierge)
+
+## Technology Stack
+
+- Next.js App Router
+- React
+- TypeScript
+- Tailwind CSS
+- MDX
+- Zod
+- Vitest
+- Playwright with axe-core
+- GitHub Actions
+- Vercel
+
+## Architecture
+
+- The App Router defines pages, static project routes, and route-specific metadata.
+- Server Components are the default. Client Components are limited to browser-state requirements: the theme toggle and the Next.js error boundary.
+- `src/content/projects/*.mdx` is the source of truth for project content.
+- A server-only loader reads each MDX file and validates its frontmatter with Zod.
+- The project index, static parameters, project metadata, and sitemap are derived from the same validated project model.
+- A safe MDX policy rejects imports, exports, JavaScript expressions, and components outside a small allowlist.
+
+## Repository Structure
+
+```text
+.github/workflows/      GitHub Actions CI
+docs/                   Quality documentation and README assets
+public/                 Static project media
+src/app/                App Router pages, metadata, sitemap, and robots
+src/components/         Layout, theme, and project components
+src/content/projects/   MDX project case studies
+src/lib/                Shared profile, metadata, and site configuration
+src/lib/content/        Project schema, loader, anchors, and MDX safety
+tests/e2e/              Playwright journeys and quality checks
+```
+
+## Getting Started
+
+The repository declares pnpm `11.24.0` as its package manager.
 
 ```bash
+git clone https://github.com/Eliya25/eliya-portfolio.git
+cd eliya-portfolio
 pnpm install
-cp .env.example .env.local
 pnpm dev
 ```
 
-`NEXT_PUBLIC_SITE_URL` must be a valid HTTPS origin. The application removes trailing slashes before constructing canonical, sitemap, and robots URLs. Local development can use the documented default; production must use the real public Vercel URL.
-
-## Scripts
+Open <http://localhost:3000>. No environment variable is required for local development; the application has a documented default site URL. To verify an optimized build:
 
 ```bash
-pnpm dev          # local Next.js server
-pnpm lint         # ESLint
-pnpm format       # write Prettier formatting
-pnpm format:check # verify formatting
-pnpm type-check   # TypeScript without emit
-pnpm test         # Vitest unit tests
-pnpm build        # production build
-pnpm test:e2e     # Playwright E2E and accessibility checks
-pnpm start        # serve the production build
+pnpm build
+pnpm start
 ```
+
+## Available Scripts
+
+| Command             | Purpose                                       |
+| ------------------- | --------------------------------------------- |
+| `pnpm dev`          | Start the local Next.js development server    |
+| `pnpm build`        | Create an optimized production build          |
+| `pnpm start`        | Serve the production build                    |
+| `pnpm lint`         | Run ESLint                                    |
+| `pnpm format`       | Format supported files with Prettier          |
+| `pnpm format:check` | Check formatting without rewriting files      |
+| `pnpm type-check`   | Run TypeScript checking without emitting code |
+| `pnpm test`         | Run the Vitest suite                          |
+| `pnpm e2e`          | Run Playwright end-to-end tests               |
 
 Install Chromium once before running E2E locally:
 
@@ -46,41 +111,35 @@ Install Chromium once before running E2E locally:
 pnpm exec playwright install chromium
 ```
 
-## Content workflow
+## Adding a Project
 
-Projects live in `src/content/projects/<slug>.mdx`.
+1. Create `src/content/projects/<slug>.mdx`.
+2. Add frontmatter that matches the [project schema](src/lib/content/project-schema.ts).
+3. Keep the frontmatter `slug` identical to the filename.
+4. Add an optional cover or gallery only through the image structure defined by the schema, with local media under `public/images/projects/<slug>/`.
+5. Write the engineering case study in the MDX body using Markdown and approved project components.
+6. Run `pnpm test` and `pnpm build`.
 
-1. Use the same kebab-case value for the filename and frontmatter `slug`.
-2. Provide every required field defined in `src/lib/content/project-schema.ts`.
-3. Keep the body to Markdown and explicitly approved MDX components. Imports, exports, JavaScript expressions, and unknown components are rejected.
-4. Use local project images under `public/images/projects/<slug>/` where practical.
-5. Run `pnpm test` and `pnpm build`.
+The Projects index, project route, static parameters, metadata, and sitemap update automatically. Invalid metadata, an empty body, unsafe MDX, or a filename/slug mismatch fails validation.
 
-Projects are discovered automatically. The project index, static routes, metadata, and sitemap require no manual registration. Invalid frontmatter stops tests and the production build with the source filename and failing fields.
+## Testing and Quality
 
-## Architecture
+The quality gates cover:
 
-The App Router renders Home, About, Projects, and project case studies statically. The server-only content loader reads MDX, separates frontmatter, validates it with Zod, and supplies the same project model to cards, routes, metadata, and the sitemap. MDX is evaluated with a restrictive plugin and a small allowlist of Server Components for project media and diagrams.
+- ESLint, Prettier, and strict TypeScript checking
+- Vitest tests for schemas, content loading, safe MDX, anchor IDs, and site URLs
+- Next.js production builds
+- Playwright journeys and internal-link validation
+- axe WCAG A/AA accessibility checks
+- Keyboard focus order and horizontal overflow
+- Responsive coverage at 320px, 375px, 768px, and 1440px
 
-The site URL is normalized in one module and reused for canonical URLs, Open Graph metadata, Twitter cards, robots, and sitemap entries. This prevents environment-specific URL construction from drifting across routes.
+The current repository state passes 21 unit tests and 7 Playwright tests. Counts may change as the project evolves. See the [quality report](docs/quality-report.md) for the latest verified audit, including Lighthouse lab measurements.
 
-## Testing
+## CI and Deployment
 
-Vitest covers schema edge cases, safe MDX rules, content loading, and URL normalization. Playwright covers:
+The [CI workflow](.github/workflows/ci.yml) runs dependency installation, linting, formatting checks, TypeScript checks, unit tests, a production build, Chromium installation, and deterministic Playwright E2E tests.
 
-- Home → Projects → Lumière
-- verified GitHub and Live Demo link targets
-- important internal-link responses
-- 320px, 375px, 768px, and 1440px viewports
-- WCAG A/AA automated checks on every public route
-- horizontal overflow and primary keyboard focus order
+Vercel is connected to GitHub and publishes the portfolio independently of the CI workflow. `NEXT_PUBLIC_SITE_URL` supplies the production origin used for absolute canonical, Open Graph, sitemap, and robots URLs. GitHub Actions validates the repository; it does not promote or approve production releases.
 
-The E2E suite uses only local portfolio content and does not call Gemini or TMDB.
-
-## Deployment
-
-Vercel hosts Preview and Production deployments. Set `NEXT_PUBLIC_SITE_URL` to the final HTTPS production origin in the Production environment before the production build. Preview deployments may use their own deployment URL for validation.
-
-GitHub Actions performs CI validation only: install, lint, formatting, type-check, unit tests, production build, Chromium installation, and deterministic E2E. Branch Protection is intentionally not configured yet.
-
-After deployment, smoke-test `/`, `/about`, `/projects`, `/projects/lumiere`, `/sitemap.xml`, and `/robots.txt`. Lighthouse provides a lab measurement; real Core Web Vitals should only be reported after sufficient field data is available.
+The portfolio is complete and can grow with additional source-backed case studies over time.
