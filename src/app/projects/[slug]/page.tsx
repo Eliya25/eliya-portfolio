@@ -57,7 +57,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       <Link className="text-link back-link" href="/projects">
         ← All projects
       </Link>
-      <header className="project-header">
+      <header className="project-header" data-hero>
         <p className="eyebrow">Project overview</p>
         <h1 className="page-title">{project.title}</h1>
         <p className="page-intro">{project.shortDescription}</p>
@@ -84,7 +84,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           ) : null}
         </div>
       </header>
-      <div className="project-facts" aria-label="Project details">
+      <div className="project-facts" aria-label="Project details" data-reveal>
         <div>
           <span>Problem</span>
           <p>{project.problemSummary}</p>

@@ -67,6 +67,21 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), sans-serif;
   text-rendering: optimizeLegibility;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Initial state for GSAP entrances; see components/motion/page-motion.tsx. */
+[data-motion="on"] [data-hero] > *,
+[data-motion="on"] [data-reveal] {
+  opacity: 0;
+}
+
+/* Room for descenders inside the clipped hero title lines. */
+.hero-line-mask {
+  margin-bottom: -0.14em;
+  padding-bottom: 0.14em;
 }
 
 a {
@@ -137,6 +152,11 @@ a {
 }
 .site-nav-link {
   text-underline-offset: 0.25rem;
+  transition: color 0.2s ease;
+}
+
+.site-nav-link:hover {
+  color: var(--accent);
 }
 
 .theme-toggle {
@@ -149,11 +169,16 @@ a {
   background: var(--surface);
   color: var(--foreground);
   cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.3s ease;
 }
 
 .theme-toggle:hover {
   border-color: var(--accent);
   color: var(--accent);
+  transform: rotate(30deg);
 }
 
 .theme-icon {
@@ -221,10 +246,20 @@ h1 {
   text-decoration: none;
   cursor: pointer;
   box-shadow: var(--shadow);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .button:hover {
   background: var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+.button:active {
+  transform: translateY(0);
 }
 .site-footer {
   border-top: 1px solid var(--border);
@@ -314,6 +349,11 @@ h1 {
   padding: 1.5rem;
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
+  transition: background-color 0.3s ease;
+}
+
+.skill-group:hover {
+  background: var(--surface);
 }
 
 .skill-group h3 {
@@ -419,6 +459,15 @@ h1 {
   border: 1px solid var(--border);
   border-radius: 0.75rem;
   background: var(--surface);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.project-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
 }
 
 .project-card--no-cover {
@@ -428,6 +477,7 @@ h1 {
 .project-card-cover {
   min-height: 100%;
   display: block;
+  overflow: hidden;
   border-right: 1px solid var(--border);
   background: var(--background);
 }
@@ -437,6 +487,11 @@ h1 {
   height: 100%;
   display: block;
   object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.project-card:hover .project-card-cover img {
+  transform: scale(1.04);
 }
 
 .project-card-content {
@@ -513,6 +568,11 @@ h1 {
   color: var(--accent);
   font-weight: 650;
   text-underline-offset: 0.25rem;
+  transition: text-underline-offset 0.2s ease;
+}
+
+.text-link:hover {
+  text-underline-offset: 0.4rem;
 }
 
 .back-link {

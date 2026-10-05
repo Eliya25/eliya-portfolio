@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { PageMotion } from "@/components/motion/page-motion";
 import { siteConfig } from "@/lib/site";
 
 import "./globals.css";
@@ -45,6 +46,16 @@ const themeScript = `
       document.documentElement.dataset.theme = theme;
       document.documentElement.style.colorScheme = theme;
     } catch {}
+    try {
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const root = document.documentElement;
+        root.dataset.motion = "on";
+        // Never leave content hidden if the animation bundle fails to load.
+        setTimeout(() => {
+          if (!root.dataset.motionReady) delete root.dataset.motion;
+        }, 4000);
+      }
+    } catch {}
   })();
 `;
 
@@ -67,6 +78,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           {children}
         </main>
         <SiteFooter />
+        <PageMotion />
       </body>
     </html>
   );

@@ -16,14 +16,16 @@ export default async function ProjectsPage() {
 
   return (
     <section className="content-section shell" aria-labelledby="projects-title">
-      <p className="eyebrow">Selected work</p>
-      <h1 id="projects-title" className="page-title">
-        Projects
-      </h1>
-      <p className="page-intro">
-        Engineering projects documented through the problems they solve, their
-        architecture, and the trade-offs behind their implementation.
-      </p>
+      <header data-hero>
+        <p className="eyebrow">Selected work</p>
+        <h1 id="projects-title" className="page-title">
+          Projects
+        </h1>
+        <p className="page-intro">
+          Engineering projects documented through the problems they solve, their
+          architecture, and the trade-offs behind their implementation.
+        </p>
+      </header>
       <div className="project-grid">
         {projects.map((project) => (
           <ProjectCard project={project} key={project.slug} />
