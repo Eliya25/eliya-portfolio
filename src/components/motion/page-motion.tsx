@@ -64,8 +64,11 @@ export function PageMotion() {
         }
       });
 
-      gsap.set("[data-reveal]", { y: 28 });
-      ScrollTrigger.batch("[data-reveal]", {
+      const reveals = gsap.utils.toArray<HTMLElement>("[data-reveal]");
+      if (reveals.length === 0) return;
+
+      gsap.set(reveals, { y: 28 });
+      ScrollTrigger.batch(reveals, {
         start: "top 88%",
         once: true,
         onEnter: (elements) =>

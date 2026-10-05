@@ -1,0 +1,126 @@
+---
+slug: atelier
+title: Atelier — Luxury Fashion Store
+shortDescription: A full-stack fashion store with Stripe Checkout, stock reservation, and an admin area, built so that concurrent buyers can never oversell a product.
+problemSummary: An online store has to stay correct when two people buy the last item at once, when a payment webhook arrives late or twice, and when a checkout is abandoned while holding stock.
+publishedAt: "2026-10-05"
+featured: true
+status: completed
+coverImage:
+  src: /images/projects/atelier/home.jpg
+  alt: Atelier storefront home page featuring the Riviera Collection hero
+  width: 1440
+  height: 900
+technologies:
+  - Next.js
+  - TypeScript
+  - PostgreSQL
+  - Drizzle ORM
+  - Neon
+  - Stripe
+  - Better Auth
+  - Vitest
+demoUrl: https://atelier-store-silk.vercel.app
+seo:
+  title: Atelier — Luxury Fashion Store
+  description: How Atelier keeps stock, orders, and Stripe payments consistent with row locks, an idempotent webhook, and a tested payment state machine.
+---
+
+## Overview
+
+Atelier is a full-stack luxury fashion store: a storefront with categories, collections and search, customer accounts, a shopping bag, Stripe Checkout, appointment booking, and an admin area for orders, products, and stock.
+
+The application is a single Next.js App Router project deployed on Vercel. Server components read Postgres through Drizzle, mutations run as server actions, and Stripe hosts the payment page. Payments run in Stripe test mode, so the deployed demo can be used end to end without real money.
+
+<ProjectFigure
+  src="/images/projects/atelier/product.jpg"
+  alt="Atelier product page for a woven leather tote showing price, colour options, and an Only 3 left stock notice"
+  width="1440"
+  height="900"
+  caption="A product page with live stock: the low-stock notice is read from Postgres on every render."
+/>
+
+## Problem
+
+A store front end is the easy part. The hard part is keeping three things in agreement while the outside world behaves unpredictably: what the customer was charged, what the order says, and how much stock is left.
+
+Several ordinary situations break a naive implementation. Two customers check out the last piece at the same moment. Stripe delivers the same event twice, or delivers an expiry after a payment. A customer opens checkout and walks away, holding stock nobody else can buy. A request is replayed directly against a server action by someone who never saw the admin interface. The goal of the project was to handle each of these deliberately and to prove it with tests.
+
+## Solution
+
+The design rests on a clear split of ownership. Stripe owns the payment page and the payment itself. The application owns prices, stock, and orders, and treats everything that arrives from a browser as untrusted.
+
+Checkout reserves stock inside a database transaction before the customer ever reaches Stripe. The order becomes paid only when a signed webhook says so. A scheduled job releases reservations that were never completed. Each of these steps is a guarded state transition, so repeated or out-of-order events have no effect.
+
+## Architecture
+
+- **Reads:** server components query Neon Postgres over its HTTP driver. Catalog pages are static and revalidate every 60 seconds, or immediately after an admin edit.
+- **Locking writes:** operations that need row locks run in interactive transactions over a per-request WebSocket pool, because the HTTP driver cannot hold a transaction open.
+- **Payments:** a server action creates a Stripe Checkout Session; Stripe later calls a webhook route that verifies the signature against the raw request body.
+- **Cleanup:** a daily Vercel Cron request, authenticated with a bearer secret, sweeps expired unpaid orders.
+- **Authentication:** Better Auth provides email and password sessions, a customer or admin role, and database-backed rate limits.
+
+## The server owns every price
+
+The bag cookie stores only product slugs and quantities. Names, prices, and stock are read from Postgres on every render, so a tampered cookie cannot change what anything costs.
+
+At checkout the order is built from the locked product rows, and each price is copied into the order's line items so later catalog edits do not rewrite history. The line items sent to Stripe come from those same rows. Money is stored as integer cents throughout.
+
+## Preventing overselling
+
+Creating a pending order is one transaction. It locks the product rows with `SELECT … FOR UPDATE`, re-checks stock, decrements it, and writes the order. The rows are always locked in id order, so two checkouts that share products cannot deadlock. A second customer who clicks at the same moment waits for the lock, then sees zero stock and is returned to the bag.
+
+Admin stock changes go through the same lock. They are expressed as a relative adjustment, such as a restock of six or one damaged piece, applied as `stock + delta` in SQL and recorded with the name of the person who made them. Check constraints back this up at the database level: stock and prices cannot be negative.
+
+## Payment state machine
+
+The success page never trusts the redirect back from Stripe. An order is marked paid only from a webhook event whose signature has been verified.
+
+- **Idempotent:** each event id is stored in the same transaction as the order change. A redelivered event does nothing, and a failure rolls back both so that Stripe's retry is processed in full.
+- **Order-safe:** every transition checks the current state, so an expiry that arrives after a payment is ignored.
+- **Explicit about edge cases:** a payment that lands after the reservation expired takes the stock again if it is still available. If it is not, the order is marked paid and flagged for review instead of overselling. An amount or currency mismatch is flagged as well, and flagged orders appear in a dedicated admin queue.
+- **Delayed payment methods** move to a processing state first and resolve to paid or failed later.
+
+<ProjectFigure
+  src="/images/projects/atelier/admin-order.jpg"
+  alt="Atelier admin order page with a Needs review notice reporting an amount mismatch between Stripe and the order total"
+  width="1440"
+  height="900"
+  caption="An order flagged for review in the admin area after the charged amount did not match the order total."
+/>
+
+## Releasing abandoned checkouts
+
+A checkout reserves stock for 31 minutes. The stock returns when the customer cancels, starts a new checkout, or Stripe reports that the session expired.
+
+Webhooks can be missed, so a daily cron job closes unpaid orders that are still pending 15 minutes after their expiry. It asks Stripe about each one first, which leaves a checkout that was actually paid for the webhook to handle. The route rejects any request that does not carry the cron secret.
+
+## Authorization and security
+
+Server actions are public POST endpoints regardless of what the interface shows, and layouts do not re-run on client navigation. Every admin page, query, and action therefore performs its own admin check. Non-admins receive a 404, so the existence of the admin area is not confirmed. The middleware only checks that a session cookie exists, as an optimistic redirect.
+
+This was verified by capturing a real admin action request and replaying it as a customer and as a signed-out visitor. Both were refused and nothing changed.
+
+Two smaller details received the same care. The return path after sign-in is resolved the way a browser resolves it before being checked, which closes an open redirect that a simple prefix test would miss. Every form is validated on the server, and user names are validated in the auth library's database hooks so that calling the auth API directly cannot skip them.
+
+## Testing and CI
+
+The project has two suites. Unit tests cover the pure rules: bag parsing and pricing, product and appointment validation, stock adjustments, order filters, the redirect check, and cron authentication.
+
+Database tests run against a real Postgres branch and cover the payment state machine, the abandoned-checkout sweep, and concurrency, including simultaneous checkouts and simultaneous admin adjustments. The test setup refuses to run unless the database carries a marker table and differs from the development database, so the suite cannot touch real data.
+
+The tests were mutation-checked: removing the statement that returns stock, or the sweep's grace period, makes tests fail. GitHub Actions runs type-checking, linting, and both suites on every push and pull request. The complete purchase flow, including a real test-mode webhook, was verified manually in a browser.
+
+## Trade-offs
+
+- Reserving stock before payment prevents overselling, but it means an abandoned checkout holds a piece for up to half an hour.
+- Using two database drivers keeps ordinary reads cheap, at the cost of a second code path for transactional writes.
+- Flagging a late payment for human review is slower than an automatic refund, but it avoids taking an irreversible action on incomplete information.
+- The sweep runs once a day, which is enough as a safety net behind webhooks but would be too coarse as the primary release mechanism.
+- Refunds, tax, multiple currencies, transactional email, and product variants were left out on purpose to keep the scope on correctness of the core purchase.
+
+## Lessons learned
+
+Correctness in a payment flow comes from deciding who is allowed to change each fact. Once the server owned prices, the database owned stock through locks and constraints, and the webhook owned payment status, most edge cases reduced to a state check.
+
+The project also showed the value of testing against a real database. The concurrency guarantees are properties of Postgres locking, and only tests that issue genuinely simultaneous transactions can demonstrate them.
