@@ -20,7 +20,7 @@ export default async function Home() {
 
   return (
     <div className="home-page">
-      <section className="hero shell" aria-labelledby="hero-title">
+      <section className="hero shell" aria-labelledby="hero-title" data-hero>
         <p className="eyebrow">
           Backend engineering · Reliable systems · Clear decisions
         </p>
@@ -48,7 +48,7 @@ export default async function Home() {
       </section>
 
       <section className="home-section shell" aria-labelledby="featured-title">
-        <div className="section-heading">
+        <div className="section-heading" data-reveal>
           <div>
             <p className="eyebrow">Selected work</p>
             <h2 id="featured-title">Featured projects</h2>
@@ -72,11 +72,11 @@ export default async function Home() {
         className="home-section shell split-section"
         aria-labelledby="about-summary-title"
       >
-        <div>
+        <div data-reveal>
           <p className="eyebrow">About</p>
           <h2 id="about-summary-title">Engineering beyond the framework.</h2>
         </div>
-        <div className="section-copy">
+        <div className="section-copy" data-reveal>
           <p>
             My approach starts with understanding the system: its boundaries,
             failure modes, data flow, and operational constraints. Tools matter,
@@ -89,7 +89,7 @@ export default async function Home() {
       </section>
 
       <section className="home-section shell" aria-labelledby="skills-title">
-        <div className="section-heading">
+        <div className="section-heading" data-reveal>
           <div>
             <p className="eyebrow">Skills</p>
             <h2 id="skills-title">Tools used in real projects.</h2>
@@ -100,7 +100,7 @@ export default async function Home() {
         </div>
         <div className="skills-grid">
           {skillGroups.map((group) => (
-            <div className="skill-group" key={group.title}>
+            <div className="skill-group" key={group.title} data-reveal>
               <h3>{group.title}</h3>
               <p>{group.skills.join(" · ")}</p>
             </div>
@@ -112,11 +112,11 @@ export default async function Home() {
         className="home-section contact-section shell"
         aria-labelledby="contact-title"
       >
-        <div>
+        <div data-reveal>
           <p className="eyebrow">Contact</p>
           <h2 id="contact-title">Let&apos;s talk engineering.</h2>
         </div>
-        <div className="contact-links">
+        <div className="contact-links" data-reveal>
           <a className="button" href={`mailto:${profile.email}`}>
             Email me
           </a>

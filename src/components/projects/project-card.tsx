@@ -16,6 +16,7 @@ export function ProjectCard({
   return (
     <article
       className={`project-card${project.coverImage ? "" : "project-card--no-cover"}`}
+      data-reveal
     >
       {project.coverImage ? (
         <Link

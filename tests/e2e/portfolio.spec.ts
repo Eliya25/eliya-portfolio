@@ -108,6 +108,8 @@ for (const viewport of viewports) {
     page,
   }) => {
     await page.setViewportSize(viewport);
+    // Audit the settled layout rather than mid-animation opacity states.
+    await page.emulateMedia({ reducedMotion: "reduce" });
 
     for (const route of routes) {
       await page.goto(route);

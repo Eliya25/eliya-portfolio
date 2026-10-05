@@ -13,7 +13,7 @@ export const metadata: Metadata = createPageMetadata({
 export default function AboutPage() {
   return (
     <div className="content-section shell about-page">
-      <header className="about-intro">
+      <header className="about-intro" data-hero>
         <p className="eyebrow">About</p>
         <h1 className="page-title">
           I care about how systems work, not only how they are assembled.
@@ -38,7 +38,11 @@ export default function AboutPage() {
         </div>
       </header>
 
-      <section className="about-section" aria-labelledby="experience-title">
+      <section
+        className="about-section"
+        aria-labelledby="experience-title"
+        data-reveal
+      >
         <div className="about-section-heading">
           <p className="eyebrow">Experience</p>
           <h2 id="experience-title">{profile.role}</h2>
@@ -50,7 +54,11 @@ export default function AboutPage() {
         </ul>
       </section>
 
-      <section className="about-section" aria-labelledby="education-title">
+      <section
+        className="about-section"
+        aria-labelledby="education-title"
+        data-reveal
+      >
         <div className="about-section-heading">
           <p className="eyebrow">Education</p>
           <h2 id="education-title">{profile.education.degree}</h2>
