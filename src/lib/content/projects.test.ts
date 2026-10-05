@@ -6,8 +6,8 @@ describe("project content loader", () => {
   it("loads and validates the repository-backed project collection", async () => {
     const projects = await getAllProjects();
 
-    expect(projects).toHaveLength(1);
-    expect(projects[0]).toMatchObject({
+    expect(projects.map(({ slug }) => slug)).toEqual(["atelier", "lumiere"]);
+    expect(projects[1]).toMatchObject({
       slug: "lumiere",
       title: "Lumière — AI Movie Concierge",
       featured: true,

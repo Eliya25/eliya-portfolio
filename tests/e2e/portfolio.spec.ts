@@ -1,7 +1,13 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-const routes = ["/", "/about", "/projects", "/projects/lumiere"];
+const routes = [
+  "/",
+  "/about",
+  "/projects",
+  "/projects/lumiere",
+  "/projects/atelier",
+];
 const viewports = [
   { name: "mobile-320", width: 320, height: 800 },
   { name: "mobile-375", width: 375, height: 812 },
@@ -27,7 +33,9 @@ test("Home to Lumière exposes the verified project links", async ({ page }) => 
   await expect(exploreProjects).toHaveAttribute("href", "/projects");
   await Promise.all([page.waitForURL(/\/projects$/), exploreProjects.click()]);
 
-  const projectCard = page.getByRole("article");
+  const projectCard = page
+    .getByRole("article")
+    .filter({ hasText: "Lumière — AI Movie Concierge" });
   await expect(
     projectCard.getByRole("img", {
       name: "Lumière AI Movie Concierge title framed by cinematic film strips",
